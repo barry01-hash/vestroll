@@ -311,11 +311,6 @@ export const kybVerifications = pgTable("kyb_verifications", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
-export const milestoneStatusEnum = pgEnum("milestone_status", [
-  "In Progress",
-  "Approved", 
-  "Rejected",
-]);
 
 export const contracts = pgTable(
   "contracts",
