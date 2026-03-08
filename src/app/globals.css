@@ -258,6 +258,9 @@ body {
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
   * {
     @apply border-border outline-ring/50;
   }
@@ -329,4 +332,27 @@ body {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:active {
   background-color: #bfc0c2;
+}
+
+/* View Transitions for Dark Mode Toggle */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Switching to Dark Mode (Dark expanding over Light) */
+.dark::view-transition-old(root) {
+  z-index: 1;
+}
+.dark::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* Switching to Light Mode (Dark shrinking to reveal Light) */
+html:not(.dark)::view-transition-old(root) {
+  z-index: 9999;
+}
+html:not(.dark)::view-transition-new(root) {
+  z-index: 1;
 }

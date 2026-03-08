@@ -38,21 +38,13 @@ import { ZodError } from "zod";
  */
 export async function POST(req: NextRequest) {
   try {
-
     const body = await req.json();
     const validatedData = RegisterSchema.parse(body);
 
-    const registrationData = {
-      firstName: validatedData.firstName.trim(),
-      lastName: validatedData.lastName.trim(),
-      email: validatedData.businessEmail.trim().toLowerCase(),
-    };
-
-    const result = await AuthService.register(registrationData);
+    const result = await AuthService.register(validatedData);
 
     return ApiResponse.success(result, "Verification email sent", 201);
   } catch (error) {
-
     if (error instanceof ZodError) {
       const fieldErrors: Record<string, string> = {};
       error.issues.forEach((issue) => {

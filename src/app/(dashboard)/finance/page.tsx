@@ -1,4 +1,5 @@
 "use client";
+import { motion } from "framer-motion";
 
 import { useState } from "react";
 import { MOCK_ASSETS, generateMockTransactions } from "@/lib/mock-data";
@@ -87,7 +88,7 @@ export default function FinancePage() {
           </span>
         );
       default:
-        return item[column.key] || "-";
+        return (item as any)[column.key] || "-";
     }
   };
 
@@ -137,7 +138,11 @@ export default function FinancePage() {
     <div className="">
       <div className="">
         {/* Header */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <header className="flex sm:flex-row items-center justify-between px-6 sm:pt-6 pb-1 space-y-1 sm:space-y-2 bg-white sm:border-b sm:border-[#DCE0E5] sm:pb-5 dark:bg-gray-900 dark:border-gray-800">
             <div>
               <p className="text-xs text-[#7F8C9F] font-medium leading-[120%] tracking-[0%] dark:text-gray-400">
@@ -148,9 +153,14 @@ export default function FinancePage() {
               </h1>
             </div>
           </header>
-        </div>
+        </motion.div>
 
-        <div className="p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+          className="p-4"
+        >
           {/* Balance Section */}
           <div className="flex flex-col md:flex-row w-full gap-4 md:gap-6 mb-2">
             <BalanceSection balance="$5,050.00" change="-0.0051% ($0.99)" />
@@ -191,7 +201,7 @@ export default function FinancePage() {
               getItemId={(item) => item.id}
             />
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

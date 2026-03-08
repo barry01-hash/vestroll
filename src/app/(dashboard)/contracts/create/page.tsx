@@ -1,4 +1,5 @@
 "use client";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { useState } from "react";
 import ContractDetails from "@/components/features/contracts/ContractDetails";
@@ -9,7 +10,6 @@ import ContractReviewAccordion from "@/components/features/contracts/Sign&Review
 import ContractReviewModal from "@/components/features/contracts/ContractReviewModal";
 
 import { ContractFormData } from "@/types/interface";
-
 
 interface FormErrors {
   [key: string]: string;
@@ -37,7 +37,7 @@ export default function CreateContractPage() {
     endDate: "",
     terminationNotice: "",
     network: "Ethereum",
-    asset: "USD", 
+    asset: "USD",
     amount: "2000.00",
     calculatedAmount: "1974.849",
     invoiceFrequency: "",
@@ -90,8 +90,9 @@ export default function CreateContractPage() {
         {steps.map((step) => (
           <div
             key={step.id}
-            className={`h-1 flex-1 transition-colors duration-300 ${step.id <= currentStep ? "bg-[#5E2A8C]" : "bg-[#E5E7EB]"
-              } rounded-full`}
+            className={`h-1 flex-1 transition-colors duration-300 ${
+              step.id <= currentStep ? "bg-[#5E2A8C]" : "bg-[#E5E7EB]"
+            } rounded-full`}
           />
         ))}
       </div>
@@ -108,11 +109,10 @@ export default function CreateContractPage() {
 
   const handleToggleReviewModal = () => {
     setShowReviewModal(!showReviewModal);
-  }
+  };
 
   const handleCreateContract = () => {
     console.log("Creating contract with data:", formData);
-
   };
 
   const renderStep = () => {
@@ -121,40 +121,52 @@ export default function CreateContractPage() {
         return (
           <div className="py-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
-              <div onClick={() => {
-                    handleFormDataChange({ ...formData, contractType: 1 });
-                    setCurrentStep(currentStep + 1);
-                  }}
+              <div
+                onClick={() => {
+                  handleFormDataChange({ ...formData, contractType: 1 });
+                  setCurrentStep(currentStep + 1);
+                }}
                 className="w-full max-w-96 p-6 bg-[#F5F6F7] rounded-lg border border-transparent
                         hover:border-primary-500 hover:bg-[#F3EBF9] transition-colors
-                          cursor-pointer">
-                <h4 className="font-semibold text-[#17171C] mb-1">Fixed Rate</h4>
+                          cursor-pointer"
+              >
+                <h4 className="font-semibold text-[#17171C] mb-1">
+                  Fixed Rate
+                </h4>
                 <p className="text-sm text-[#7F8C9F]">
                   For contracts that have a fixed rate each payment cycle.
                 </p>
               </div>
-              <div onClick={() => {
-                    handleFormDataChange({ ...formData, contractType: 2 });
-                    setCurrentStep(currentStep + 1);
-                  }}
+              <div
+                onClick={() => {
+                  handleFormDataChange({ ...formData, contractType: 2 });
+                  setCurrentStep(currentStep + 1);
+                }}
                 className="w-full max-w-96 p-6 bg-[#F5F6F7] rounded-lg border border-transparent
                         hover:border-primary-500 hover:bg-[#F3EBF9] transition-colors
-                          cursor-pointer">
-                <h4 className="font-semibold text-[#17171C] mb-1">Pay as you go</h4>
+                          cursor-pointer"
+              >
+                <h4 className="font-semibold text-[#17171C] mb-1">
+                  Pay as you go
+                </h4>
                 <p className="text-sm text-[#7F8C9F]">
-                  For contracts that require time sheets or work submissions each payment cycle.
+                  For contracts that require time sheets or work submissions
+                  each payment cycle.
                 </p>
               </div>
-              <div onClick={() => {
-                    handleFormDataChange({ ...formData, contractType: 3 });
-                    setCurrentStep(currentStep + 1);
-                  }}
+              <div
+                onClick={() => {
+                  handleFormDataChange({ ...formData, contractType: 3 });
+                  setCurrentStep(currentStep + 1);
+                }}
                 className="w-full max-w-96 p-6 bg-[#F5F6F7] rounded-lg border border-transparent
                         hover:border-primary-500 hover:bg-[#F3EBF9] transition-colors
-                          cursor-pointer">
+                          cursor-pointer"
+              >
                 <h4 className="font-semibold text-[#17171C] mb-1">Milestone</h4>
                 <p className="text-sm text-[#7F8C9F]">
-                  For contracts with milestones that get paid each time they&apos;re completed.
+                  For contracts with milestones that get paid each time
+                  they&apos;re completed.
                 </p>
               </div>
             </div>
@@ -185,34 +197,43 @@ export default function CreateContractPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-hidden">
       <ProgressBar />
-      {renderStep()}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentStep}
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -20, opacity: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
+          {renderStep()}
+        </motion.div>
+      </AnimatePresence>
       {/* Bottom Navigation */}
-      { currentStep > 1 && (
-      <div className="flex justify-between mt-8 gap-4">
-        <button
-          onClick={onPrev}
-          className="flex-1 py-3 border border-black text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-        >
-          Prev
-        </button>
-        <button
-          onClick={onNext}
-          className="flex-1 py-3 bg-[#5E2A8C] text-white rounded-lg hover:bg-purple-800 transition-colors font-medium"
-        >
-          Next
-        </button>
-      </div>
+      {currentStep > 1 && (
+        <div className="flex justify-between mt-8 gap-4">
+          <button
+            onClick={onPrev}
+            className="flex-1 py-3 border border-black text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-800"
+          >
+            Prev
+          </button>
+          <button
+            onClick={onNext}
+            className="flex-1 py-3 bg-[#5E2A8C] text-white rounded-lg hover:bg-purple-800 transition-colors font-medium"
+          >
+            Next
+          </button>
+        </div>
       )}
       {showReviewModal && (
         <ContractReviewModal
           onClose={() => setShowReviewModal(false)}
-          onConfirm={handleCreateContract} 
+          onConfirm={handleCreateContract}
           formData={formData}
         />
       )}
     </div>
   );
 }
-

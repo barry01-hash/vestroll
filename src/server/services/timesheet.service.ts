@@ -128,17 +128,12 @@ export class TimesheetService {
       .update(timesheets)
       .set({
         status: input.status,
-        totalApprovedAmount,
-        lockedForPayroll: input.status === "approved",
-        approvedBy: userId,
-        approvedAt: now,
         updatedAt: now,
       })
       .where(eq(timesheets.id, timesheetId))
       .returning({
         id: timesheets.id,
         status: timesheets.status,
-        totalApprovedAmount: timesheets.totalApprovedAmount,
       });
 
     return updated;

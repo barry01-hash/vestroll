@@ -1,7 +1,7 @@
 import React from "react";
 import { X } from "lucide-react";
 import Image from "next/image";
-import warning from "../../../../../../../public/images/deletewarn.png";
+import warning from "../../../../../../public/images/deletewarn.png";
 
 interface DeleteTemplateConfirmationModalProps {
   isOpen: boolean;

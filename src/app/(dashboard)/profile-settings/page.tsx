@@ -1,5 +1,6 @@
 // app/settings/page.tsx (or wherever your main file is)
 "use client";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -112,7 +113,18 @@ export default function Page() {
           </div>
         </div>
       </header>
-      <div className="m-4 max-w-6xl">{renderTabContent()}</div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -15 }}
+          transition={{ duration: 0.3 }}
+          className="m-4 max-w-6xl"
+        >
+          {renderTabContent()}
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }
@@ -134,8 +146,21 @@ function Settings() {
   };
 
   return (
-    <>
-      <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 sm:p-6 shadow-sm">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+      }}
+    >
+      <motion.div
+        variants={{
+          hidden: { opacity: 0, y: 15 },
+          visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+        }}
+        className="rounded-xl border border-[#e5e7eb] bg-white p-4 sm:p-6 shadow-sm"
+      >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div className="flex items-center gap-4 sm:gap-6">
             {profImage ? (
@@ -174,7 +199,7 @@ function Settings() {
             Upload image
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Upload Modal */}
       <UploadImageModal
@@ -184,7 +209,13 @@ function Settings() {
         currentImage={profImage || undefined}
       />
 
-      <div className="mt-6">
+      <motion.div
+        variants={{
+          hidden: { opacity: 0, y: 15 },
+          visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+        }}
+        className="mt-6"
+      >
         <SectionCard
           title="General"
           action={
@@ -217,9 +248,15 @@ function Settings() {
             <FieldRow label="Password" value="password" />
           </div>
         </SectionCard>
-      </div>
+      </motion.div>
 
-      <div className="mt-6">
+      <motion.div
+        variants={{
+          hidden: { opacity: 0, y: 15 },
+          visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+        }}
+        className="mt-6"
+      >
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-start justify-between mb-4">
             <div>
@@ -257,9 +294,15 @@ function Settings() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="mt-6">
+      <motion.div
+        variants={{
+          hidden: { opacity: 0, y: 15 },
+          visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+        }}
+        className="mt-6"
+      >
         <SectionCard title="Legal">
           <div className="space-x-4 space-y-4">
             <button className="rounded-full bg-gray-200 text-black p-3">
@@ -273,7 +316,7 @@ function Settings() {
             </button>
           </div>
         </SectionCard>
-      </div>
-    </>
+      </motion.div>
+    </motion.div>
   );
 }

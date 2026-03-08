@@ -5,7 +5,7 @@ import { AuthService } from "@/lib/api/auth";
 interface UseAuthReturn {
   login: (email: string, password: string) => Promise<void>;
   register: (
-    email: string,
+    businessEmail: string,
     firstName: string,
     lastName: string,
   ) => Promise<void>;
@@ -42,7 +42,7 @@ export const useAuth = (): UseAuthReturn => {
     }
   };
   const register = async (
-    email: string,
+    businessEmail: string,
     firstName: string,
     lastName: string,
   ) => {
@@ -50,10 +50,9 @@ export const useAuth = (): UseAuthReturn => {
     setError(null);
 
     try {
-      await AuthService.register({ email, firstName, lastName });
-      router.push("/add-password");
+      await AuthService.register({ businessEmail, firstName, lastName });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : "Registration failed");
       throw err;
     } finally {
       setIsLoading(false);

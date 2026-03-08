@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ExportIcon, UsdtIcon } from "../../../../../../public/svg";
+import { ExportIcon, UsdtIcon } from "../../../../../public/svg";
 import Table from "@/components/shared/table/Table";
 import { TableColumn } from "@/components/shared/table/TableHeader";
 import { Transaction } from "@/types/finance.types";
@@ -86,7 +86,7 @@ export default function TransactionsPage() {
           </span>
         );
       default:
-        return item[column.key] || "-";
+        return (item as any)[column.key] || "-";
     }
   };
 
@@ -182,9 +182,7 @@ export default function TransactionsPage() {
           showPagination={true}
           itemsPerPage={10}
           showResultsPerPage={true}
-          emptyTitle={
-            search ? "No transactions found" : "No transactions yet"
-          }
+          emptyTitle={search ? "No transactions found" : "No transactions yet"}
           emptyDescription={
             search
               ? `No transactions match "${search}". Try adjusting your search.`

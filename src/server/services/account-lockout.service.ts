@@ -7,15 +7,13 @@ export class AccountLockoutService {
   private static readonly LOCKOUT_DURATION_MS = 15 * 60 * 1000;
 
   static isLocked(user: typeof users.$inferSelect): boolean {
+    if (process.env.NODE_ENV === "development") return false;
     if (!user.lockedUntil) return false;
     return new Date() < user.lockedUntil;
   }
 
   static async incrementFailures(userId: string) {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId));
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
 
     if (!user) return;
 

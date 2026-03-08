@@ -1,11 +1,12 @@
 import { NextRequest } from "next/server";
-import { db, employees, contracts, timesheets} from "@/server/db";
+import { db, employees, contracts, timesheets } from "@/server/db";
 import { eq, and } from "drizzle-orm";
 import { ApiResponse } from "@/server/utils/api-response";
 import { z } from "zod";
 import { AuthUtils } from "@/server/utils/auth";
 
-const UUID_REGEX = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+const UUID_REGEX =
+  /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 /**
  * @swagger
@@ -29,10 +30,13 @@ const UUID_REGEX = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}
  *       401:
  *         description: Unauthorized
  */
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
     const idSchema = z.string().regex(UUID_REGEX, { message: "Invalid UUID" });
-    const { id } = params;
+    const { id } = await params;
     if (!idSchema.safeParse(id).success) {
       return ApiResponse.error("Invalid employee ID", 400);
     }
@@ -48,17 +52,28 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       return ApiResponse.error("Unauthorized", 401);
     }
 
-    const [employee] = await db.select().from(employees).where(eq(employees.id, id)).limit(1);
+    const [employee] = await db
+      .select()
+      .from(employees)
+      .where(eq(employees.id, id))
+      .limit(1);
     if (!employee) {
       return ApiResponse.error("Employee not found", 404);
     }
-    if (!employee.organizationId || employee.organizationId !== requesterOrgId) {
+    if (
+      !employee.organizationId ||
+      employee.organizationId !== requesterOrgId
+    ) {
       return ApiResponse.error("Employee not found", 404);
     }
 
     const [activeContracts, paymentHistory] = await Promise.all([
-      db.select().from(contracts)
-        .where(and(eq(contracts.employeeId, id), eq(contracts.status, "active")))
+      db
+        .select()
+        .from(contracts)
+        .where(
+          and(eq(contracts.employeeId, id), eq(contracts.status, "active")),
+        )
         .limit(1),
       db.select().from(timesheets).where(eq(timesheets.employeeId, id)),
     ]);
@@ -76,7 +91,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
             status: contract.status,
           }
         : null,
-      history: paymentHistory.map(p => ({ date: p.submittedAt, amount: p.totalAmount, rate: p.rate })),
+      history: paymentHistory.map((p) => ({
+        date: p.submittedAt,
+        amount: p.totalAmount,
+        rate: p.rate,
+      })),
     };
 
     const profile = {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Settings, LogOut, X } from "lucide-react";
+import { motion } from "framer-motion";
 import { ThemeToggle } from "../shared/theme-toggle";
 import logoSet from "@/../public/LogoSet.png";
 
@@ -87,43 +88,49 @@ export default function Sidebar({
             const isSettings = href === "/settings";
             return (
               <li key={href}>
-                <Link
-                  href={href}
-                  className={classNames(
-                    "group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm outline-none transition-all focus-visible:ring-2 focus-visible:ring-[#6d28d9]",
-                    active
-                      ? "bg-[#5E2A8C] text-white shadow"
-                      : "text-[#111827]/80 hover:bg-[#f5f3ff] hover:text-[#4c1d95]",
-                  )}
-                  aria-current={active ? "page" : undefined}
+                <motion.div
+                  whileHover={{ x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full"
                 >
-                  {iconSrc ? (
-                    <Image
-                      src={iconSrc}
-                      alt=""
-                      width={20}
-                      height={20}
-                      className={classNames(
-                        "shrink-0 transition",
-                        active
-                          ? "brightness-0 invert"
-                          : "opacity-70 group-hover:opacity-100",
-                      )}
-                      aria-hidden="true"
-                    />
-                  ) : Icon ? (
-                    <Icon
-                      className={classNames(
-                        "h-5 w-5 transition-colors",
-                        active
-                          ? "text-white"
-                          : "text-[#6b7280] group-hover:text-[#4c1d95]",
-                      )}
-                      aria-hidden="true"
-                    />
-                  ) : null}
-                  <span className="truncate">{name}</span>
-                </Link>
+                  <Link
+                    href={href}
+                    className={classNames(
+                      "group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm outline-none transition-all focus-visible:ring-2 focus-visible:ring-[#6d28d9]",
+                      active
+                        ? "bg-[#5E2A8C] text-white shadow"
+                        : "text-[#111827]/80 hover:bg-[#f5f3ff] hover:text-[#4c1d95]",
+                    )}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    {iconSrc ? (
+                      <Image
+                        src={iconSrc}
+                        alt=""
+                        width={20}
+                        height={20}
+                        className={classNames(
+                          "shrink-0 transition",
+                          active
+                            ? "brightness-0 invert"
+                            : "opacity-70 group-hover:opacity-100",
+                        )}
+                        aria-hidden="true"
+                      />
+                    ) : Icon ? (
+                      <Icon
+                        className={classNames(
+                          "h-5 w-5 transition-colors",
+                          active
+                            ? "text-white"
+                            : "text-[#6b7280] group-hover:text-[#4c1d95]",
+                        )}
+                        aria-hidden="true"
+                      />
+                    ) : null}
+                    <span className="truncate">{name}</span>
+                  </Link>
+                </motion.div>
               </li>
             );
           })}

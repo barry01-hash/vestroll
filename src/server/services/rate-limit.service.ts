@@ -3,7 +3,6 @@ import { emailVerifications, loginAttempts } from "../db/schema";
 import { eq, and, gte, count } from "drizzle-orm";
 
 export class RateLimitService {
-
   private static readonly MAX_REQUESTS = 3;
   private static readonly WINDOW_MINUTES = 5;
 
@@ -23,23 +22,22 @@ export class RateLimitService {
       .where(
         and(
           eq(emailVerifications.userId, userId),
-          gte(emailVerifications.createdAt, windowStart)
-        )
+          gte(emailVerifications.createdAt, windowStart),
+        ),
       );
 
     const requestCount = recentAttempts[0]?.count || 0;
     const isLimited = requestCount >= this.MAX_REQUESTS;
 
     if (isLimited) {
-
       const oldestRequest = await db
         .select({ createdAt: emailVerifications.createdAt })
         .from(emailVerifications)
         .where(
           and(
             eq(emailVerifications.userId, userId),
-            gte(emailVerifications.createdAt, windowStart)
-          )
+            gte(emailVerifications.createdAt, windowStart),
+          ),
         )
         .orderBy(emailVerifications.createdAt)
         .limit(1);
@@ -47,7 +45,7 @@ export class RateLimitService {
       const retryAfter = oldestRequest[0]
         ? new Date(
             oldestRequest[0].createdAt.getTime() +
-              this.WINDOW_MINUTES * 60 * 1000
+              this.WINDOW_MINUTES * 60 * 1000,
           )
         : new Date(Date.now() + this.WINDOW_MINUTES * 60 * 1000);
 
@@ -58,6 +56,9 @@ export class RateLimitService {
   }
 
   static async isRateLimited(ipAddress: string): Promise<boolean> {
+    if (process.env.NODE_ENV === "development") {
+      return false;
+    }
     const startTime = new Date(Date.now() - this.WINDOW_MS);
 
     const [result] = await db
@@ -67,8 +68,8 @@ export class RateLimitService {
         and(
           eq(loginAttempts.ipAddress, ipAddress),
           eq(loginAttempts.success, false),
-          gte(loginAttempts.createdAt, startTime)
-        )
+          gte(loginAttempts.createdAt, startTime),
+        ),
       );
 
     return (result?.value || 0) >= this.MAX_ATTEMPTS;

@@ -1,4 +1,5 @@
 "use client";
+import { motion, AnimatePresence } from "framer-motion";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -119,170 +120,204 @@ function HeaderTab({
 export default function Page() {
   const [activeTab, setActiveTab] = React.useState("Company");
   const tabs = ["Company", "Permissions", "Hiring templates", "Address book"];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
   return (
     <>
-      <HeaderTab
-        tabs={tabs}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
-      <div className="rounded-xl border border-[#e5e7eb] bg-white p-4 sm:p-6 shadow-sm dark:bg-gray-900 dark:border-gray-800 max-w-213 mx-4 mt-4 ">
-        <div className="flex flex-col items-center gap-4 text-center md:block sm:items-center sm:justify-start sm:text-left">
-          <div className="items-center gap-8 md:flex">
-            <Image
-              src="/touchpoint360.png"
-              alt="Touchpoint 360"
-              width={96}
-              height={96}
-              className="mx-auto md:mx-0 sm:h-[112px] sm:w-[112px] h-[96px] w-[96px]"
-            />
-
-            <div>
-              <h2 className="text-3xl sm:text-3xl font-semibold text-[#111827] dark:text-white">
-                Touchpoint 360
-              </h2>
-
-              <div className="flex flex-wrap items-center justify-center gap-5 py-4 sm:gap-4 sm:pt-4 sm:justify-start md:gap-10">
-                <Stat Icon={UsersIcon} label="Active members" value="20" />
-                <div
-                  className="hidden sm:block h-10 w-px bg-[#e5e7eb] dark:bg-gray-700"
-                  aria-hidden="true"
-                />
-                <Stat Icon={GlobeAltIcon} label="Countries" value="04" />
-                <div
-                  className="hidden sm:block h-10 w-px bg-[#e5e7eb] dark:bg-gray-700"
-                  aria-hidden="true"
-                />
-                <Stat
-                  Icon={ShieldCheckIcon}
-                  label="Administrators"
-                  value="02"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-4 mt-6 max-w-213">
-        <SectionCard
-          title="Company information"
-          action={
-            <button
-              className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-(--violet-base) border-(--violet-base) hover:bg-(--violet-hover) hover:text-white active:bg-(--violet-active) transition-colors"
-              type="button"
-              aria-label="Edit company information"
-            >
-              <Image
-                src="/edit.svg"
-                width={16}
-                height={16}
-                alt=""
-                aria-hidden
-                className="transition group-hover:invert group-hover:brightness-0 dark:invert"
-              />
-              Edit
-            </button>
-          }
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <HeaderTab
+          tabs={tabs}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      </motion.div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          exit={{ opacity: 0, y: -15 }}
+          className="pb-8"
         >
-          <div className="space-y-3">
-            <FieldRow label="Company/Brand name" value="Touchpoint 360" />
-            <FieldRow label="Registered name" value="Touchpoint 360" />
-            <FieldRow
-              label="Registration Number/EIN ID"
-              value={<span className="text-[#9ca3af]">--</span>}
-            />
-            <FieldRow
-              label="Country of incorporation"
-              value={
-                <div className="flex items-center gap-2">
-                  <Image
-                    src="/nigeria.svg"
-                    width={20}
-                    height={14}
-                    alt="Nigeria flag"
-                  />
-                  <span>Nigeria</span>
-                </div>
-              }
-            />
-            <FieldRow
-              label="Size"
-              value={<span className="text-[#9ca3af]">--</span>}
-            />
-            <FieldRow
-              label="VAT number"
-              value={<span className="text-[#9ca3af]">--</span>}
-            />
-            <FieldRow
-              label="Company public website URL"
-              value={
-                <Link
-                  href="https://www.touchpoint360.com/"
-                  className="text-(--violet-base) hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  https://www.touchpoint360.com/
-                </Link>
-              }
-            />
-          </div>
-        </SectionCard>
-      </div>
+          <motion.div
+            variants={itemVariants}
+            className="rounded-xl border border-[#e5e7eb] bg-white p-4 sm:p-6 shadow-sm dark:bg-gray-900 dark:border-gray-800 max-w-213 mx-4 mt-4 "
+          >
+            <div className="flex flex-col items-center gap-4 text-center md:block sm:items-center sm:justify-start sm:text-left">
+              <div className="items-center gap-8 md:flex">
+                <Image
+                  src="/touchpoint360.png"
+                  alt="Touchpoint 360"
+                  width={96}
+                  height={96}
+                  className="mx-auto md:mx-0 sm:h-[112px] sm:w-[112px] h-[96px] w-[96px]"
+                />
 
-      <div className="mx-4 mt-6 max-w-213">
-        <SectionCard title="Addresses">
-          <div className="space-y-4">
-            <div>
-              <div className="text-sm text-[#6b7280] mb-2 dark:text-gray-400">
-                Billing address
-              </div>
-              <div className="flex items-center gap-3 px-4 py-4 border border-gray-300 rounded-xl dark:border-gray-700 dark:bg-gray-800/50">
-                <Image
-                  src="/warning.svg"
-                  width={20}
-                  height={20}
-                  alt="Warning"
-                />
-                <div className="text-sm dark:text-gray-300">
-                  Please{" "}
-                  <Link
-                    className="underline decoration-(--violet-base) text-(--violet-base) hover:no-underline"
-                    href="#"
-                  >
-                    add
-                  </Link>{" "}
-                  your company billing address
+                <div>
+                  <h2 className="text-3xl sm:text-3xl font-semibold text-[#111827] dark:text-white">
+                    Touchpoint 360
+                  </h2>
+
+                  <div className="flex flex-wrap items-center justify-center gap-5 py-4 sm:gap-4 sm:pt-4 sm:justify-start md:gap-10">
+                    <Stat Icon={UsersIcon} label="Active members" value="20" />
+                    <div
+                      className="hidden sm:block h-10 w-px bg-[#e5e7eb] dark:bg-gray-700"
+                      aria-hidden="true"
+                    />
+                    <Stat Icon={GlobeAltIcon} label="Countries" value="04" />
+                    <div
+                      className="hidden sm:block h-10 w-px bg-[#e5e7eb] dark:bg-gray-700"
+                      aria-hidden="true"
+                    />
+                    <Stat
+                      Icon={ShieldCheckIcon}
+                      label="Administrators"
+                      value="02"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-            <div>
-              <div className="text-sm text-[#6b7280] mb-2 dark:text-gray-400">
-                Registered address
-              </div>
-              <div className="flex items-center gap-3 px-4 py-4 border border-gray-300 rounded-xl dark:border-gray-700 dark:bg-gray-800/50">
-                <Image
-                  src="/warning.svg"
-                  width={20}
-                  height={20}
-                  alt="Warning"
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="mx-4 mt-6 max-w-213">
+            <SectionCard
+              title="Company information"
+              action={
+                <button
+                  className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-(--violet-base) border-(--violet-base) hover:bg-(--violet-hover) hover:text-white active:bg-(--violet-active) transition-colors"
+                  type="button"
+                  aria-label="Edit company information"
+                >
+                  <Image
+                    src="/edit.svg"
+                    width={16}
+                    height={16}
+                    alt=""
+                    aria-hidden
+                    className="transition group-hover:invert group-hover:brightness-0 dark:invert"
+                  />
+                  Edit
+                </button>
+              }
+            >
+              <div className="space-y-3">
+                <FieldRow label="Company/Brand name" value="Touchpoint 360" />
+                <FieldRow label="Registered name" value="Touchpoint 360" />
+                <FieldRow
+                  label="Registration Number/EIN ID"
+                  value={<span className="text-[#9ca3af]">--</span>}
                 />
-                <div className="text-sm dark:text-gray-300">
-                  Please{" "}
-                  <Link
-                    className="underline decoration-(--violet-base) text-(--violet-base) hover:no-underline"
-                    href="settings/registered-address"
-                  >
-                    add
-                  </Link>{" "}
-                  your registered address
+                <FieldRow
+                  label="Country of incorporation"
+                  value={
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src="/nigeria.svg"
+                        width={20}
+                        height={14}
+                        alt="Nigeria flag"
+                      />
+                      <span>Nigeria</span>
+                    </div>
+                  }
+                />
+                <FieldRow
+                  label="Size"
+                  value={<span className="text-[#9ca3af]">--</span>}
+                />
+                <FieldRow
+                  label="VAT number"
+                  value={<span className="text-[#9ca3af]">--</span>}
+                />
+                <FieldRow
+                  label="Company public website URL"
+                  value={
+                    <Link
+                      href="https://www.touchpoint360.com/"
+                      className="text-(--violet-base) hover:underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      https://www.touchpoint360.com/
+                    </Link>
+                  }
+                />
+              </div>
+            </SectionCard>
+          </motion.div>
+
+          <motion.div variants={itemVariants} className="mx-4 mt-6 max-w-213">
+            <SectionCard title="Addresses">
+              <div className="space-y-4">
+                <div>
+                  <div className="text-sm text-[#6b7280] mb-2 dark:text-gray-400">
+                    Billing address
+                  </div>
+                  <div className="flex items-center gap-3 px-4 py-4 border border-gray-300 rounded-xl dark:border-gray-700 dark:bg-gray-800/50">
+                    <Image
+                      src="/warning.svg"
+                      width={20}
+                      height={20}
+                      alt="Warning"
+                    />
+                    <div className="text-sm dark:text-gray-300">
+                      Please{" "}
+                      <Link
+                        className="underline decoration-(--violet-base) text-(--violet-base) hover:no-underline"
+                        href="#"
+                      >
+                        add
+                      </Link>{" "}
+                      your company billing address
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm text-[#6b7280] mb-2 dark:text-gray-400">
+                    Registered address
+                  </div>
+                  <div className="flex items-center gap-3 px-4 py-4 border border-gray-300 rounded-xl dark:border-gray-700 dark:bg-gray-800/50">
+                    <Image
+                      src="/warning.svg"
+                      width={20}
+                      height={20}
+                      alt="Warning"
+                    />
+                    <div className="text-sm dark:text-gray-300">
+                      Please{" "}
+                      <Link
+                        className="underline decoration-(--violet-base) text-(--violet-base) hover:no-underline"
+                        href="settings/registered-address"
+                      >
+                        add
+                      </Link>{" "}
+                      your registered address
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </SectionCard>
-      </div>
+            </SectionCard>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
     </>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import InputField from "@/components/ui/input-field";
 import Dropdown from "@/components/ui/dropdown";
@@ -95,87 +96,124 @@ export default function CompleteKYBPage() {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md dark:bg-gray-900"
+    >
+      <motion.form
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        onSubmit={handleSubmit}
+        className="space-y-6"
+      >
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
+          <motion.div
+            variants={itemVariants}
+            className="bg-red-50 text-red-600 p-3 rounded-lg text-sm dark:bg-red-900/20 dark:text-red-400"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
         {/* Business Registration Type */}
-        <Dropdown
-          label="Business registration type"
-          options={businessRegistrationTypes}
-          value={formData.businessRegistrationType}
-          onChange={(value) =>
-            handleInputChange("businessRegistrationType", value)
-          }
-          placeholder="--"
-        />
+        <motion.div variants={itemVariants}>
+          <Dropdown
+            label="Business registration type"
+            options={businessRegistrationTypes}
+            value={formData.businessRegistrationType}
+            onChange={(value) =>
+              handleInputChange("businessRegistrationType", value)
+            }
+            placeholder="--"
+          />
+        </motion.div>
 
         {/* Business Registration Number */}
-        <InputField
-          id="businessRegistrationNo"
-          label="Enter business registration No."
-          type="text"
-          placeholder="--"
-          value={formData.businessRegistrationNo}
-          onChange={(e) =>
-            handleInputChange("businessRegistrationNo", e.target.value)
-          }
-        />
+        <motion.div variants={itemVariants}>
+          <InputField
+            id="businessRegistrationNo"
+            label="Enter business registration No."
+            type="text"
+            placeholder="--"
+            value={formData.businessRegistrationNo}
+            onChange={(e) =>
+              handleInputChange("businessRegistrationNo", e.target.value)
+            }
+          />
+        </motion.div>
 
         {/* File Uploads */}
-        <FileUpload
-          key="incorporation-certificate"
-          label="Upload Incorporation Certificate"
-          onFileSelect={(file) =>
-            handleFileSelect("incorporationCertificate", file)
-          }
-          file={formData.incorporationCertificate}
-          accept=".svg,.png,.jpg,.jpeg,.gif,.pdf"
-          maxSize={5}
-          isUploading={isSubmitting}
-          uploadProgress={0}
-        />
+        <motion.div variants={itemVariants}>
+          <FileUpload
+            key="incorporation-certificate"
+            label="Upload Incorporation Certificate"
+            onFileSelect={(file) =>
+              handleFileSelect("incorporationCertificate", file)
+            }
+            file={formData.incorporationCertificate}
+            accept=".svg,.png,.jpg,.jpeg,.gif,.pdf"
+            maxSize={5}
+            isUploading={isSubmitting}
+            uploadProgress={0}
+          />
+        </motion.div>
 
-        <FileUpload
-          key="memorandum-article"
-          label="Memorandum & Article of Association"
-          onFileSelect={(file) => handleFileSelect("memorandumArticle", file)}
-          file={formData.memorandumArticle}
-          accept=".svg,.png,.jpg,.jpeg,.gif,.pdf"
-          maxSize={5}
-          isUploading={isSubmitting}
-          uploadProgress={0}
-        />
+        <motion.div variants={itemVariants}>
+          <FileUpload
+            key="memorandum-article"
+            label="Memorandum & Article of Association"
+            onFileSelect={(file) => handleFileSelect("memorandumArticle", file)}
+            file={formData.memorandumArticle}
+            accept=".svg,.png,.jpg,.jpeg,.gif,.pdf"
+            maxSize={5}
+            isUploading={isSubmitting}
+            uploadProgress={0}
+          />
+        </motion.div>
 
-        <FileUpload
-          key="form-c02-c07"
-          label="Form C02/C07"
-          onFileSelect={(file) => handleFileSelect("formC02C07", file)}
-          file={formData.formC02C07}
-          accept=".svg,.png,.jpg,.jpeg,.gif,.pdf"
-          maxSize={5}
-          isUploading={isSubmitting}
-          uploadProgress={0}
-        />
+        <motion.div variants={itemVariants}>
+          <FileUpload
+            key="form-c02-c07"
+            label="Form C02/C07"
+            onFileSelect={(file) => handleFileSelect("formC02C07", file)}
+            file={formData.formC02C07}
+            accept=".svg,.png,.jpg,.jpeg,.gif,.pdf"
+            maxSize={5}
+            isUploading={isSubmitting}
+            uploadProgress={0}
+          />
+        </motion.div>
 
         {/* Submit Button */}
-        <div className="pt-4">
+        <motion.div variants={itemVariants} className="pt-4">
           <Button
             type="submit"
             variant="default"
             size="lg"
             disabled={isSubmitting}
-            className="w-full bg-[#5E2A8C] py-6 lg:h-[56px] mt-4 hover:bg-[#4A1F6F] text-white rounded-[12px]"
+            className="w-full bg-[#5E2A8C] py-6 lg:h-[56px] mt-4 hover:bg-[#4A1F6F] text-white rounded-[12px] transition-colors"
           >
             {isSubmitting ? "Submitting..." : "Submit"}
           </Button>
-        </div>
-      </form>
-    </div>
+        </motion.div>
+      </motion.form>
+    </motion.div>
   );
 }

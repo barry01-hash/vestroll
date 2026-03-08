@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import {
   ArrowLeftIcon,
   BuildingIcon,
@@ -67,109 +68,122 @@ export function DetailsView<T>({
           </div>
 
           {/* Main card */}
-          <Card className="p-5 md:p-6 rounded-xl bg-white shadow-xs">
-            <div className="flex md:flex-row justify-between items-start md:items-center gap-2 mb-6">
-              <div className="flex items-center gap-3">
-                <div className="bg-[#F3EBF9] text-primary-500 py-3 px-3 rounded-md">
-                  {config.header.icon}
-                </div>
-                <div>
-                  <p className="text-sm md:text-lg font-semibold text-gray-800">
-                    {config.header.title(data)}
-                  </p>
-                  {config.header.subtitle && (
-                    <p className="text-xs md:text-sm text-gray-400">
-                      {config.header.subtitle(data)}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <Card className="p-5 md:p-6 rounded-xl bg-white shadow-xs">
+              <div className="flex md:flex-row justify-between items-start md:items-center gap-2 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="bg-[#F3EBF9] text-primary-500 py-3 px-3 rounded-md">
+                    {config.header.icon}
+                  </div>
+                  <div>
+                    <p className="text-sm md:text-lg font-semibold text-gray-800">
+                      {config.header.title(data)}
                     </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex-col flex">
-                <span className="text-xs md:text-sm text-gray-600">Status</span>
-                <span
-                  className={cn(
-                    "text-xs md:text-sm px-2 md:px-3 py-1 rounded-full font-medium",
-                    status === "Approved"
-                      ? "bg-green-50 border border-green-400 text-green-600"
-                      : status === "Rejected"
-                        ? "bg-red-50 border border-red-400 text-red-600"
-                        : "bg-yellow-50 border border-yellow-400 text-yellow-600"
-                  )}
-                >
-                  {status}
-                </span>
-              </div>
-            </div>
-
-            {/* Summary */}
-            {config.summary && (
-              <div className="space-y-4">
-                <div className="flex justify-between bg-gray-100 text-gray-500 p-2 text-sm">
-                  <p>{config.summary.leftLabel}</p>
-                  <p>{config.summary.rightLabel}</p>
-                </div>
-                <div className="flex justify-between text-sm font-medium">
-                  <p>{config.summary.leftValue(data)}</p>
-                  <p>{config.summary.rightValue(data)}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Description */}
-            {config.description && (
-              <div>
-                <p className="text-gray-500 bg-gray-100 p-1 text-sm mb-1">
-                  Description
-                </p>
-                <p className="text-gray-700 text-md font-bold p-1">
-                  {config.description}
-                </p>
-              </div>
-            )}
-
-            {/* Attachments */}
-            {config.attachments && (
-              <div className="text-sm">
-                <div className="bg-gray-100 py-1 px-1 flex items-center justify-between">
-                  <p className="text-gray-500 ">Attachment</p>
-                  <p className="text-gray-500">Submitted on</p>
-                </div>
-
-                <div className="mt-2 text-primary-500 cursor-pointer">
-                  <div className="justify-between items-center flex">
-                    <span
-                      onClick={() =>
-                        window.open(config.attachments.url, "_blank")
-                      }
-                      className="pl-1"
-                    >
-                      File_name.pdf
-                    </span>
-                    <p className="text-gray-700">
-                      {config.attachments.submittedAt}
-                    </p>
+                    {config.header.subtitle && (
+                      <p className="text-xs md:text-sm text-gray-400">
+                        {config.header.subtitle(data)}
+                      </p>
+                    )}
                   </div>
                 </div>
-              </div>
-            )}
 
-            {/* Reason for rejection */}
-            {config.reasonForRejection && (
-              <div>
-                <p className="text-gray-500 bg-gray-100 p-1 text-sm mb-1">
-                  Reason for rejection
-                </p>
-                <p className="text-gray-700 text-md font-bold p-1">
-                  {config.reasonForRejection}
-                </p>
+                <div className="flex-col flex">
+                  <span className="text-xs md:text-sm text-gray-600">
+                    Status
+                  </span>
+                  <span
+                    className={cn(
+                      "text-xs md:text-sm px-2 md:px-3 py-1 rounded-full font-medium",
+                      status === "Approved"
+                        ? "bg-green-50 border border-green-400 text-green-600"
+                        : status === "Rejected"
+                          ? "bg-red-50 border border-red-400 text-red-600"
+                          : "bg-yellow-50 border border-yellow-400 text-yellow-600",
+                    )}
+                  >
+                    {status}
+                  </span>
+                </div>
               </div>
-            )}
-          </Card>
+
+              {/* Summary */}
+              {config.summary && (
+                <div className="space-y-4">
+                  <div className="flex justify-between bg-gray-100 text-gray-500 p-2 text-sm">
+                    <p>{config.summary.leftLabel}</p>
+                    <p>{config.summary.rightLabel}</p>
+                  </div>
+                  <div className="flex justify-between text-sm font-medium">
+                    <p>{config.summary.leftValue(data)}</p>
+                    <p>{config.summary.rightValue(data)}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Description */}
+              {config.description && (
+                <div>
+                  <p className="text-gray-500 bg-gray-100 p-1 text-sm mb-1">
+                    Description
+                  </p>
+                  <p className="text-gray-700 text-md font-bold p-1">
+                    {config.description}
+                  </p>
+                </div>
+              )}
+
+              {/* Attachments */}
+              {config.attachments && (
+                <div className="text-sm">
+                  <div className="bg-gray-100 py-1 px-1 flex items-center justify-between">
+                    <p className="text-gray-500 ">Attachment</p>
+                    <p className="text-gray-500">Submitted on</p>
+                  </div>
+
+                  <div className="mt-2 text-primary-500 cursor-pointer">
+                    <div className="justify-between items-center flex">
+                      <span
+                        onClick={() =>
+                          window.open(config.attachments.url, "_blank")
+                        }
+                        className="pl-1"
+                      >
+                        File_name.pdf
+                      </span>
+                      <p className="text-gray-700">
+                        {config.attachments.submittedAt}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Reason for rejection */}
+              {config.reasonForRejection && (
+                <div>
+                  <p className="text-gray-500 bg-gray-100 p-1 text-sm mb-1">
+                    Reason for rejection
+                  </p>
+                  <p className="text-gray-700 text-md font-bold p-1">
+                    {config.reasonForRejection}
+                  </p>
+                </div>
+              )}
+            </Card>
+          </motion.div>
 
           {/* Footer cards */}
           {config.footerCards && (
-            <div className="grid md:grid-cols-2 gap-4 mt-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="grid md:grid-cols-2 gap-4 mt-6"
+            >
               <Card className="p-4 rounded-xl shadow-xs">
                 <div className="flex justify-between">
                   <div className="flex items-center gap-3">
@@ -212,7 +226,7 @@ export function DetailsView<T>({
                     onClick={() =>
                       window.open(
                         `/app/team-management/${config.footerCards.employeeId}`,
-                        "_blank"
+                        "_blank",
                       )
                     }
                     className="text-primary-500 relative top-3  gap-1 flex items-center text-sm hover:underline cursor-pointer"
@@ -222,7 +236,7 @@ export function DetailsView<T>({
                   </button>
                 </div>
               </Card>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>

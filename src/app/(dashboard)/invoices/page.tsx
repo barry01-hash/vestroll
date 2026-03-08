@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Table from "@/components/shared/table/Table";
 import { TableColumn } from "@/components/shared/table/TableHeader";
 import { invoiceMetricsData } from "@/constants";
@@ -146,19 +146,46 @@ const Invoices: React.FC = () => {
     router.push(`${RoutePaths.INVOICES}/${invoice.id}`);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
   return (
     <div className="flex flex-col flex-1 bg-gray-100 w-full min-h-full dark:bg-gray-950">
-      <div className="bg-white py-6 border-b border-[#DCE0E5] dark:bg-gray-900 dark:border-gray-800">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white py-6 border-b border-[#DCE0E5] dark:bg-gray-900 dark:border-gray-800"
+      >
         <TitleHeader title="Invoices" isBackButton={false} isExportButton />
-      </div>
+      </motion.div>
 
       <AnimatePresence mode="wait">
-        <div className="flex flex-col flex-1 w-full h-full px-4 py-4 ">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="flex flex-col flex-1 w-full h-full px-4 py-4 "
+        >
           {/* metrics cards ... keep your existing block */}
           {invoices.length > 0 && (
             <div className="gap-4 w-full flex overflow-x-auto mb-4 sm:grid sm:grid-cols-4 sm:overflow-x-visible">
               {invoiceMetricsData.map((metric) => (
-                <div key={metric.title} className="min-w-3xs w-full">
+                <motion.div
+                  variants={itemVariants}
+                  key={metric.title}
+                  className="min-w-3xs w-full"
+                >
                   <div className="h-full p-4 bg-white rounded-lg min-w-60 lg:w-full dark:bg-gray-900">
                     <span className="flex justify-between text-xs font-medium">
                       <p className="text-text-subtext dark:text-gray-400">
@@ -181,33 +208,35 @@ const Invoices: React.FC = () => {
                       <span className="text-primary-500">{metric.icon}</span>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}
 
-          <Table
-            data={filteredInvoices}
-            columns={invoiceColumns}
-            search={search}
-            setSearch={setSearch}
-            showModal={showModal}
-            selectedTab="Invoice history"
-            searchPlaceholder="Search by title..."
-            selectedItems={selectedItems}
-            onSelectItem={handleSelectItem}
-            onSelectAll={handleSelectAll}
-            onRowClick={handleRowClick}
-            renderCell={renderInvoiceCell}
-            emptyTitle={search ? "No invoices found" : "No invoices yet"}
-            emptyDescription={
-              search
-                ? `No invoices match "${search}". Try adjusting your search.`
-                : "Invoices sent to you will be displayed here"
-            }
-            renderMobileCell={renderMobileCell}
-          />
-        </div>
+          <motion.div variants={itemVariants}>
+            <Table
+              data={filteredInvoices}
+              columns={invoiceColumns}
+              search={search}
+              setSearch={setSearch}
+              showModal={showModal}
+              selectedTab="Invoice history"
+              searchPlaceholder="Search by title..."
+              selectedItems={selectedItems}
+              onSelectItem={handleSelectItem}
+              onSelectAll={handleSelectAll}
+              onRowClick={handleRowClick}
+              renderCell={renderInvoiceCell}
+              emptyTitle={search ? "No invoices found" : "No invoices yet"}
+              emptyDescription={
+                search
+                  ? `No invoices match "${search}". Try adjusting your search.`
+                  : "Invoices sent to you will be displayed here"
+              }
+              renderMobileCell={renderMobileCell}
+            />
+          </motion.div>
+        </motion.div>
       </AnimatePresence>
     </div>
   );

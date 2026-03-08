@@ -4,6 +4,16 @@ export const RegisterSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   businessEmail: z.string().email("Invalid email format"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  agreement: z
+    .boolean()
+    .refine((val) => val === true, "You must agree to the terms"),
+  accountType: z.string().optional(),
+  companyName: z.string().optional(),
+  companySize: z.string().optional(),
+  companyIndustry: z.string().optional(),
+  headquarterCountry: z.string().optional(),
+  businessDescription: z.string().optional(),
 });
 
 export type RegisterInput = z.infer<typeof RegisterSchema>;
@@ -69,7 +79,7 @@ export const ResetPasswordSchema = z.object({
     .min(8, "Password must be at least 8 characters")
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number",
     ),
 });
 

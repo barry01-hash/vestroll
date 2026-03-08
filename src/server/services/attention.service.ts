@@ -5,7 +5,7 @@ import {
   milestones,
   invoices,
   timesheets,
-  expenses,
+  employees,
   timeOffRequests,
 } from "../db/schema";
 import { eq, and, or, count } from "drizzle-orm";
@@ -26,12 +26,11 @@ export class AttentionService {
     const orgId = user.organizationId;
 
     const [
-      [{ contractsPendingSignature }],
-      [{ milestonesCompleted }],
-      [{ invoicesRequiringPayment }],
-      [{ pendingTimesheets }],
-      [{ pendingExpenses }],
-      [{ pendingTimeOffRequests }],
+      contractsResult,
+      milestonesResult,
+      invoicesResult,
+      timesheetsResult,
+      timeOffResult,
     ] = await Promise.all([
       db
         .select({ contractsPendingSignature: count() })
@@ -45,9 +44,10 @@ export class AttentionService {
       db
         .select({ milestonesCompleted: count() })
         .from(milestones)
+        .innerJoin(employees, eq(milestones.employeeId, employees.id))
         .where(
           and(
-            eq(milestones.organizationId, orgId),
+            eq(employees.organizationId, orgId),
             eq(milestones.status, "completed"),
           ),
         ),
@@ -57,10 +57,7 @@ export class AttentionService {
         .where(
           and(
             eq(invoices.organizationId, orgId),
-            or(
-              eq(invoices.status, "unpaid"),
-              eq(invoices.status, "overdue"),
-            ),
+            or(eq(invoices.status, "unpaid"), eq(invoices.status, "overdue")),
           ),
         ),
       db
@@ -70,15 +67,6 @@ export class AttentionService {
           and(
             eq(timesheets.organizationId, orgId),
             eq(timesheets.status, "pending"),
-          ),
-        ),
-      db
-        .select({ pendingExpenses: count() })
-        .from(expenses)
-        .where(
-          and(
-            eq(expenses.organizationId, orgId),
-            eq(expenses.status, "pending"),
           ),
         ),
       db
@@ -93,12 +81,13 @@ export class AttentionService {
     ]);
 
     return {
-      contractsPendingSignature,
-      milestonesCompleted,
-      invoicesRequiringPayment,
-      pendingTimesheets,
-      pendingExpenses,
-      pendingTimeOffRequests,
+      contractsPendingSignature:
+        contractsResult[0]?.contractsPendingSignature ?? 0,
+      milestonesCompleted: milestonesResult[0]?.milestonesCompleted ?? 0,
+      invoicesRequiringPayment:
+        invoicesResult[0]?.invoicesRequiringPayment ?? 0,
+      pendingTimesheets: timesheetsResult[0]?.pendingTimesheets ?? 0,
+      pendingTimeOffRequests: timeOffResult[0]?.pendingTimeOffRequests ?? 0,
     };
   }
 }

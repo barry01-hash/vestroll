@@ -11,9 +11,22 @@ import eur from "@/../public/images/eur.png";
 import gbp from "@/../public/images/gbp.png";
 import ngn from "@/../public/images/ngn.png";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
+import { useEffect } from "react";
+
 function AuthLayer({ children }: AuthLayoutProps) {
+  const { setTheme } = useTheme();
+
+  useEffect(() => {
+    setTheme("light");
+    if (typeof document !== "undefined") {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
+    }
+  }, [setTheme]);
+
   return (
-    <div className="relative flex min-h-screen p-5 md:max-w-screen ">
+    <div className="relative flex min-h-screen p-5 md:max-w-screen bg-white text-[#111827]">
       <motion.div
         initial={{
           x: 50,
@@ -217,7 +230,7 @@ function AuthLayer({ children }: AuthLayoutProps) {
             opacity: 1,
           }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex items-center justify-center flex-1 mt-20 md:mt-0"
+          className="flex items-center justify-center flex-1 mt-20 md:mt-0 text-[#111827]"
         >
           {children}
         </motion.div>

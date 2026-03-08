@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { currencies } from "@/constants";
 
 interface Contract {
@@ -62,15 +63,37 @@ export default function ContractGrid() {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  };
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+    >
       {contractsData.length === 0 ? (
-        <div className="col-span-full text-center py-10 text-text-secondary">
+        <motion.div
+          variants={itemVariants}
+          className="col-span-full text-center py-10 text-text-secondary"
+        >
           No contracts available
-        </div>
+        </motion.div>
       ) : (
         contractsData.map((contract) => (
-          <div
+          <motion.div
+            variants={itemVariants}
             key={contract.id}
             className="bg-background-b1 border border-stroke-primary rounded-lg py-4 px-4 hover:shadow-lg transition-shadow duration-200"
           >
@@ -126,15 +149,15 @@ export default function ContractGrid() {
               </span>
               <span
                 className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusStyles(
-                  contract.status
+                  contract.status,
                 )}`}
               >
                 {contract.status}
               </span>
             </div>
-          </div>
+          </motion.div>
         ))
       )}
-    </div>
+    </motion.div>
   );
 }

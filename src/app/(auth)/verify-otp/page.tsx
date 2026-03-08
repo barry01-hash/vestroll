@@ -14,7 +14,7 @@ function VerifyOTPPage() {
   const handleVerify = async (otp: string) => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const isValid = otp === "000000";
+    const isValid = otp === "123456";
 
     if (isValid) {
       router.push("/dashboard");

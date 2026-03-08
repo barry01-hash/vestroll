@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import BillingEmailSection from "./billing-email-section";
 import PermissionsTableSection from "./permissions-table-section";
 import { useRouter } from "next/navigation";
-import PermissionFormView from "@/app/app/(dashboard)/settings/permissions/permission-form/page";
+import PermissionFormView from "@/app/(dashboard)/settings/permissions/permission-form/page";
 
 const initialUsers: User[] = [
   {
@@ -38,7 +38,7 @@ const initialUsers: User[] = [
 
 export default function PermissionsTab() {
   const [billingEmail, setBillingEmail] = useState<string>(
-    "legend4tech1@gmail.com"
+    "legend4tech1@gmail.com",
   );
   const [users, setUsers] = useState<User[]>(initialUsers);
   const router = useRouter();
@@ -47,10 +47,10 @@ export default function PermissionsTab() {
     if (user) {
       // Navigate to set-permission page with user data as query parameter
       const userData = encodeURIComponent(JSON.stringify(user));
-      router.push(`/app/settings/permissions/permission-form?user=${userData}`);
+      router.push(`/settings/permissions/permission-form?user=${userData}`);
     } else {
       // Navigate to set-permission page for new user
-      router.push("/app/settings/permissions/permission-form");
+      router.push("/settings/permissions/permission-form");
     }
   };
 

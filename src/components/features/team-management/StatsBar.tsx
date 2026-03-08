@@ -1,4 +1,5 @@
 import { User } from "lucide-react";
+import { motion } from "framer-motion";
 
 type StatsBarProps = {
   totalEmployees: number;
@@ -13,7 +14,12 @@ export const StatsBar = ({
     totalEmployees > 0 ? (activeEmployees / totalEmployees) * 100 : 0;
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6 dark:bg-gray-900 dark:border-gray-800">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.98, y: -10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="bg-white rounded-lg border border-gray-200 p-4 mb-6 dark:bg-gray-900 dark:border-gray-800"
+    >
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center dark:bg-purple-900/30">
           <User size={24} className="text-primary-500 dark:text-purple-300" />
@@ -36,11 +42,13 @@ export const StatsBar = ({
         </div>
       </div>
       <div className="mt-4 w-full bg-gray-200 rounded-full h-2 dark:bg-gray-800">
-        <div
+        <motion.div
           className="bg-primary-500 h-2 rounded-full"
-          style={{ width: `${percentage}%` }}
+          initial={{ width: 0 }}
+          animate={{ width: `${percentage}%` }}
+          transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
         />
       </div>
-    </div>
+    </motion.div>
   );
 };

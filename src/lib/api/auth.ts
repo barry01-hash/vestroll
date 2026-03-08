@@ -13,7 +13,7 @@ interface ForgotPasswordData {
   email: string;
 }
 interface RegisterData {
-  email: string;
+  businessEmail: string;
   firstName: string;
   lastName: string;
 }
@@ -54,7 +54,7 @@ export class AuthService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || "Login failed");
+      throw new Error(error.message || "Registration failed");
     }
 
     return response.json();

@@ -8,13 +8,21 @@ function getDatabaseUrl() {
   }
 
   const envLocalPath = path.resolve(process.cwd(), ".env.local");
-  if (!fs.existsSync(envLocalPath)) {
-    return undefined;
+  const envPath = path.resolve(process.cwd(), ".env");
+
+  if (fs.existsSync(envLocalPath)) {
+    const envLocal = fs.readFileSync(envLocalPath, "utf8");
+    const match = envLocal.match(/^DATABASE_URL=(.+)$/m);
+    if (match?.[1]) return match[1].trim();
   }
 
-  const envLocal = fs.readFileSync(envLocalPath, "utf8");
-  const match = envLocal.match(/^DATABASE_URL=(.+)$/m);
-  return match?.[1]?.trim();
+  if (fs.existsSync(envPath)) {
+    const env = fs.readFileSync(envPath, "utf8");
+    const match = env.match(/^DATABASE_URL=(.+)$/m);
+    if (match?.[1]) return match[1].trim();
+  }
+
+  return undefined;
 }
 
 const databaseUrl = getDatabaseUrl();

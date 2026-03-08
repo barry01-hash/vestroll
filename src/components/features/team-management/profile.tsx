@@ -1,6 +1,7 @@
 import React from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface Employee {
   id: string;
@@ -31,7 +32,12 @@ const EmployeeProfileHeader: React.FC<EmployeeProfileHeaderProps> = ({
     };
 
   return (
-    <div className="py-4 sm:py-6 mb-6">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="py-4 sm:py-6 mb-6"
+    >
       <div className="flex flex-col sm:flex-row items-start gap-4">
         {/* Avatar */}
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg flex items-center justify-center font-bold text-xl sm:text-2xl">
@@ -74,7 +80,7 @@ const EmployeeProfileHeader: React.FC<EmployeeProfileHeaderProps> = ({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

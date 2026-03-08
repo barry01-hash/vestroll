@@ -2,6 +2,7 @@
 
 import { CircleDollarSign, ListFilterIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Contract, mockContracts } from "@/lib/data/contracts";
 import Image from "next/image";
 import EmptyState from "@/components/ui/EmptyState";
@@ -108,6 +109,19 @@ function ContractHistory() {
     }));
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 15 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4 } },
+  };
+
   return (
     <div className="py-4">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
@@ -200,11 +214,18 @@ function ContractHistory() {
 
       {/* contract list */}
       {filteredMockContracts.length > 0 ? (
-        <section className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <motion.section
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+        >
           {filteredMockContracts.map((item, index) => (
-            <ContractHistoryCard {...item} key={index} />
+            <motion.div variants={itemVariants} key={index}>
+              <ContractHistoryCard {...item} />
+            </motion.div>
           ))}
-        </section>
+        </motion.section>
       ) : (
         <EmptyState
           title="No transactions yet"

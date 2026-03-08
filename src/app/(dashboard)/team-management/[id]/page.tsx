@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { MoveLeft } from "lucide-react";
 import EmployeeProfileHeader from "@/components/features/team-management/profile";
@@ -35,7 +36,12 @@ export default function Page() {
       </header>
 
       {/* Main Content */}
-      <main className="p-4">
+      <motion.main
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="p-4"
+      >
         <section className="max-w-5xl p-6 bg-background-b0 rounded-xl">
           <div className="">
             <p className="text-text-primary text-sm">Personal Information</p>
@@ -52,7 +58,7 @@ export default function Page() {
             <ContractGrid />
           </div>
         </section>
-      </main>
+      </motion.main>
     </div>
   );
 }

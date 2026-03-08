@@ -8,9 +8,10 @@ import { eq } from "drizzle-orm";
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
+    const { id } = await params;
     const { userId } = await AuthUtils.authenticateRequest(req);
 
     const [user] = await db
@@ -26,12 +27,15 @@ export async function PATCH(
     const body = await req.json();
     const { status, reason } = body;
 
-    const validStatuses = ["Approved", "Rejected", "In Progress"];
+    const validStatuses = ["approved", "rejected", "in_progress"];
     if (!status || !validStatuses.includes(status)) {
       return ApiResponse.error("Invalid status value", 400);
     }
 
-    const result = await TeamService.updateMilestoneStatus(params.id, { status, reason });
+    const result = await TeamService.updateMilestoneStatus(id, {
+      status,
+      reason,
+    });
 
     return ApiResponse.success(result, "Milestone status updated successfully");
   } catch (error) {

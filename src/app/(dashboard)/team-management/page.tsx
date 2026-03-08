@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { NavigationTabs } from "@/components/features/team-management/NavigationTabs";
 import TeamMgtTimeSheet from "@/components/features/team-management/time-tracking";
@@ -70,11 +71,21 @@ const TeamManagementDashboard = () => {
       </div>
 
       <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {allEmployees.length === 0 ? (
-          <CreateFirstContact />
-        ) : (
-          renderTabContent()
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3 }}
+          >
+            {allEmployees.length === 0 ? (
+              <CreateFirstContact />
+            ) : (
+              renderTabContent()
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       {isExportOpen && (

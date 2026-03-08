@@ -1,5 +1,5 @@
-import { and, eq } from "drizzle-orm";
-import { db, employees, timeOffRequests } from "../db";
+import { and, desc, eq } from "drizzle-orm";
+import { db, employees, timeOffRequests, users } from "../db";
 import { ForbiddenError, NotFoundError } from "../utils/errors";
 import { hasAdminOrManagerRole } from "../utils/role";
 import { EmailService } from "./email.service";
@@ -138,56 +138,43 @@ export class TimeOffService {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;");
   }
-}
-import { db, employees, leaveRequests } from "../db";
-import { eq, and } from "drizzle-orm";
-import { TimeOffRequestInput } from "../validations/time-off.schema";
-import { BadRequestError, ForbiddenError, NotFoundError } from "../utils/errors";
-import { db } from "../db";
-import { leaveRequests, employees, users } from "../db/schema";
-import { eq, desc } from "drizzle-orm";
-import { ForbiddenError } from "../utils/errors";
+  static async getTimeOffRequests(userId: string) {
+    const [user] = await db
+      .select({ organizationId: users.organizationId })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
 
-export class TimeOffService {
-    
-    static async getTimeOffRequests(userId: string) {
-
-        const [user] = await db
-            .select({ organizationId: users.organizationId })
-            .from(users)
-            .where(eq(users.id, userId))
-            .limit(1);
-
-        if (!user?.organizationId) {
-            throw new ForbiddenError("User is not associated with any organization");
-        }
-
-        const results = await db
-            .select({
-                id: leaveRequests.id,
-                firstName: employees.firstName,
-                lastName: employees.lastName,
-                type: leaveRequests.leaveType,
-                startDate: leaveRequests.startDate,
-                endDate: leaveRequests.endDate,
-                totalDuration: leaveRequests.totalDuration,
-                status: leaveRequests.status,
-                submittedAt: leaveRequests.submittedAt,
-            })
-            .from(leaveRequests)
-            .innerJoin(employees, eq(leaveRequests.employeeId, employees.id))
-            .where(eq(leaveRequests.organizationId, user.organizationId))
-            .orderBy(desc(leaveRequests.submittedAt));
-
-        return results.map((req) => ({
-            id: req.id,
-            employeeName: `${req.firstName} ${req.lastName}`.trim(),
-            type: req.type,
-            startDate: req.startDate,
-            endDate: req.endDate,
-            totalDuration: req.totalDuration,
-            status: req.status,
-            submittedAt: req.submittedAt,
-        }));
+    if (!user?.organizationId) {
+      throw new ForbiddenError("User is not associated with any organization");
     }
+
+    const results = await db
+      .select({
+        id: timeOffRequests.id,
+        firstName: employees.firstName,
+        lastName: employees.lastName,
+        type: timeOffRequests.type,
+        startDate: timeOffRequests.startDate,
+        endDate: timeOffRequests.endDate,
+        totalDuration: timeOffRequests.totalDuration,
+        status: timeOffRequests.status,
+        submittedAt: timeOffRequests.submittedAt,
+      })
+      .from(timeOffRequests)
+      .innerJoin(employees, eq(timeOffRequests.employeeId, employees.id))
+      .where(eq(timeOffRequests.organizationId, user.organizationId))
+      .orderBy(desc(timeOffRequests.submittedAt));
+
+    return results.map((req) => ({
+      id: req.id,
+      employeeName: `${req.firstName} ${req.lastName}`.trim(),
+      type: req.type,
+      startDate: req.startDate,
+      endDate: req.endDate,
+      totalDuration: req.totalDuration,
+      status: req.status,
+      submittedAt: req.submittedAt,
+    }));
+  }
 }

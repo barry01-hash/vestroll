@@ -1,4 +1,4 @@
-import { db, emailVerifications, users } from "../db";
+import { db, emailVerifications, users, organizations } from "../db";
 import crypto from "crypto";
 import { OTP_EXPIRATION_MINUTES } from "./email-verification.service";
 import { UserService } from "./user.service";
@@ -18,39 +18,82 @@ import { RateLimitService } from "./rate-limit.service";
 import { LoginAttemptService } from "./login-attempt.service";
 import { eq } from "drizzle-orm";
 import { LoginInput } from "../validations/login.schema";
+import { RegisterInput } from "../validations/auth.schema";
 
 export class AuthService {
-  static async register(data: {
-    firstName: string;
-    lastName: string;
-    email: string;
-  }) {
-    const existingUser = await UserService.findByEmail(data.email);
+  static async register(data: RegisterInput) {
+    const {
+      businessEmail,
+      password,
+      firstName,
+      lastName,
+      companyName,
+      companyIndustry,
+      companySize,
+      headquarterCountry,
+      accountType,
+    } = data;
+
+    const existingUser = await UserService.findByEmail(businessEmail);
     if (existingUser) {
       throw new ConflictError("Email already exists");
     }
 
-    return await db.transaction(async (tx) => {
-      const user = await UserService.create(data);
+    const passwordHash = await PasswordVerificationService.hash(password);
 
+    return await db.transaction(async (tx) => {
+      // 1. Create Organization if it's a business account or companyName exists
+      let organizationId: string | undefined;
+
+      if (companyName) {
+        const [org] = await tx
+          .insert(organizations)
+          .values({
+            name: companyName,
+            industry: companyIndustry,
+            registeredCountry: headquarterCountry,
+          })
+          .returning();
+        organizationId = org.id;
+      }
+
+      // 2. Create User
+      const [user] = await tx
+        .insert(users)
+        .values({
+          firstName,
+          lastName,
+          email: businessEmail.toLowerCase().trim(),
+          passwordHash,
+          organizationName: companyName,
+          organizationId: organizationId as any,
+          role: accountType === "employer" ? "admin" : "employee",
+          status: "pending_verification",
+        })
+        .returning();
+
+      // 3. Setup OTP
       const otp = OTPService.generateOTP();
       const otpHash = await OTPService.hashOTP(otp);
 
       const expiresAt = new Date(
         Date.now() + OTP_EXPIRATION_MINUTES * 60 * 1000,
       );
+
       await tx.insert(emailVerifications).values({
         userId: user.id,
         otpHash,
         expiresAt,
       });
 
-      console.log(`[Email Mock] Sending OTP ${otp} to ${data.email} `);
+      console.log(`[Email Mock] Sending OTP ${otp} to ${businessEmail}`);
 
       return {
         userId: user.id,
         email: user.email,
         message: "Verification email sent",
+        // In dev/mock mode we might want to return the OTP for easier testing if needed
+        // but for now we follow the existing log pattern
       };
     });
   }
