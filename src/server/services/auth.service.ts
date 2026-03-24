@@ -348,7 +348,7 @@ export class AuthService {
       currentPasswordHash,
     );
     if (!isCurrentValid) {
-      throw new UnauthorizedError("Current password is incorrect");
+      throw new UnauthorizedError("Invalid email or password");
     }
 
     const isSamePassword = await PasswordVerificationService.verify(
