@@ -133,6 +133,7 @@ describe("OAuthUserProvisioningService", () => {
                 oauthId: "google-789",
                 oauthProvider: "google",
                 status: "active",
+                signerType: "Email",
                 passwordHash: null,
             };
 

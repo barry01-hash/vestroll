@@ -52,6 +52,13 @@
       "breakpoints": true
     },
     {
+      "idx": 6,
+      "version": "7",
+      "when": 1742831150000,
+      "tag": "0006_add_user_signer_type",
+      "breakpoints": true
+    },
+    {
       "idx": 2,
       "version": "7",
       "when": 1771844260280,

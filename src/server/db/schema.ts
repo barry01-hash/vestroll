@@ -126,7 +126,7 @@ export const users = pgTable("users", {
 
   oauthProvider: oauthProviderEnum("oauth_provider"),
   oauthId: varchar("oauth_id", { length: 255 }),
-  signerType: signerTypeEnum("signer_type"),
+  signerType: signerTypeEnum("signer_type").default("Email").notNull(),
   lastLoginAt: timestamp("last_login_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
